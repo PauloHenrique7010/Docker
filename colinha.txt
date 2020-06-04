@@ -1,0 +1,17 @@
+Mysql {
+    Precisa estar dentro da pasta api/db
+    docker build -t mysql-image .
+    docker run -d -v ${pwd}/data:/var/lib/mysql --rm --name mysql-container mysql-image
+    docker exec -it mysql-container /bin/bash
+    docker exec -i mysql-container mysql -u root -p123 < database.sql
+}
+
+Node{
+    docker build -t node-image .
+    docker run -d -v ${pwd}/api:/home/node/app -p 9001:9001 --link mysql-container --rm --name node-container node-image
+}
+
+PHP{
+    docker build -t php-image .
+    docker run -d -v ${pwd}:/var/www/html -p 8888:80 --link node-container --rm --name php-container php-image
+}
